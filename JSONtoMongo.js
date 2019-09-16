@@ -7,9 +7,7 @@ var fs = require('fs'),
     mongoose = require('mongoose'), 
     Schema = mongoose.Schema, 
     Listing = require('./ListingSchema.js'), 
-    config = require('./config'),
-    fileData;
-
+    config = require('./config');
 /* Connect to your database using mongoose - remember to keep your key secret*/
 //see https://mongoosejs.com/docs/connections.html
 //See https://docs.atlas.mongodb.com/driver-connection/
@@ -29,20 +27,32 @@ mongoose.connect(config.db.uri, {useNewUrlParser: true});
   
   if (err) throw err;
 
-  fileData = data; //FIXME: convert from JSON to array
+  var fileData = JSON.parse(data);
 
-  fileData.forEach(function(element) {
-  Listing.name = element.name;
-  Listing.code = element.code;
-  Listing.coordinates.latitude = element.coordinates.latitude;
-  Listing.coordinates.longitude = element.coordinates.longitude;
-  Listing.address = element.address;
+  var array = fileData.entries;
+
+  array.forEach(function(element) {
+
+    
+    var toInsert = new Listing(element);
+
+    toInsert.save(function(err) {
+      if (err) throw err;
+
 });
 
  });
 
+});
+
  /*console.log('after readFile()');
  console.log(fileData);*/
+
+   /*Listing.name = element.name;
+  Listing.code = element.code;
+  Listing.coordinates.latitude = element.coordinates.latitude;
+  Listing.coordinates.longitude = element.coordinates.longitude;
+  Listing.address = element.address;*/
 
 /*fileData.forEach(function(element) {
   Listing.name = element.name;
@@ -55,3 +65,15 @@ mongoose.connect(config.db.uri, {useNewUrlParser: true});
   Check to see if it works: Once you've written + run the script, check out your MongoLab database to ensure that 
   it saved everything correctly. 
  */
+
+ /*name: element.name,
+      code: element.code,
+      coordinates: {
+        latitude: element.latitude,
+        longitude: element.longitude,
+      },
+      address: element.address*/
+
+      //newEntry = element;
+
+//, {useNewUrlParser: true}
